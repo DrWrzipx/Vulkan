@@ -51,6 +51,7 @@ void Renderer::_InitDevice()
 		std::vector<VkPhysicalDevice> gpu_list(gpu_count);
 		vkEnumeratePhysicalDevices(_instance, &gpu_count, gpu_list.data());
 		_gpu = gpu_list[0]; // First one GPU on the list not most power one.
+		vkGetPhysicalDeviceProperties(_gpu, &_gpu_properties);
 	}
 
 	{
