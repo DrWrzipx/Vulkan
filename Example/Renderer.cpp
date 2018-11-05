@@ -13,7 +13,7 @@ Renderer::~Renderer()
 
 void Renderer::_InitInstance()
 {
-	vkCreateInstance()
+	
 }
 
 void Renderer::_DeInitInstance()
