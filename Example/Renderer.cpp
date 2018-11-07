@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Shared.h"
 #include <cstdlib>
 #include <assert.h>
 #include <vector>
@@ -38,19 +39,13 @@ void Renderer::_InitInstance()
 	VkInstanceCreateInfo instance_create_info {};
 	instance_create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	instance_create_info.pApplicationInfo = &application_info;
-	
 	instance_create_info.enabledLayerCount = _instance_layers.size();
 	instance_create_info.ppEnabledLayerNames = _instance_layers.data();
 	instance_create_info.enabledExtensionCount = _instance_extensions.size();
 	instance_create_info.ppEnabledExtensionNames = _instance_extensions.data();
 	instance_create_info.pNext = &debug_callback_create_info;
 
-	auto err = vkCreateInstance(&instance_create_info, nullptr, &_instance);
-
-	if (VK_SUCCESS != err) {
-		assert(0 && "Vulkan Error: Create instance failed");
-		std::exit(-1);
-	}
+	ErrorCheck(vkCreateInstance(&instance_create_info, nullptr, &_instance));
 }
 
 void Renderer::_DeInitInstance()
@@ -128,11 +123,7 @@ void Renderer::_InitDevice()
 	device_create_info.queueCreateInfoCount = 1;
 	device_create_info.pQueueCreateInfos = &device_queue_create_info;
 
-	auto err = vkCreateDevice(_gpu, &device_create_info, nullptr, &_device);
-	if (VK_SUCCESS != err) {
-		assert(0 && "Vulkan ERROR: Create device failed!");
-		exit(-1);
-	}
+	ErrorCheck(vkCreateDevice(_gpu, &device_create_info, nullptr, &_device));
 }
 
 void Renderer::_DeInitDevice()
@@ -183,11 +174,12 @@ VulkanDebugCallback(
 void Renderer::_SetupDebug()
 {
 	_instance_layers.push_back("VK_LAYER_LUNARG_standard_validation");
-	_instance_layers.push_back("VK_LAYER_LUNARG_screenshot");
-	_instance_layers.push_back("VK_LAYER_LUNARG_standard_validation");
-	_instance_layers.push_back("VK_LAYER_GOOGLE_threading");
-	_instance_layers.push_back("VK_LAYER_GOOGLE_unique_objects");
-	_instance_layers.push_back("VK_LAYER_LUNARG_vktrace");
+
+	//_instance_layers.push_back("VK_LAYER_LUNARG_screenshot");
+	//_instance_layers.push_back("VK_LAYER_LUNARG_standard_validation");
+	//_instance_layers.push_back("VK_LAYER_GOOGLE_threading");
+	//_instance_layers.push_back("VK_LAYER_GOOGLE_unique_objects");
+	//_instance_layers.push_back("VK_LAYER_LUNARG_vktrace");
 	//_instance_layers.push_back()
 
 	_instance_extensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
@@ -203,7 +195,7 @@ void Renderer::_InitDebug()
 	
 	if (nullptr == fvkCreateDebugReportCallbackEXT || nullptr == fvkDestroyDebugReportCallbackEXT) 
 	{
-		assert(1 && "Vulkan ERROR: Can not fetch debug function pointers.");
+		assert(0 && "Vulkan ERROR: Can not fetch debug function pointers.");
 		std::exit(-1);
 	}
 
@@ -211,11 +203,11 @@ void Renderer::_InitDebug()
 	debug_callback_create_info.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 	debug_callback_create_info.pfnCallback = &VulkanDebugCallback;
 	debug_callback_create_info.flags =
-		VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
+	//  VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
 		VK_DEBUG_REPORT_WARNING_BIT_EXT |
 		VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
 		VK_DEBUG_REPORT_ERROR_BIT_EXT |
-		VK_DEBUG_REPORT_DEBUG_BIT_EXT |
+	//  VK_DEBUG_REPORT_DEBUG_BIT_EXT |
 		VK_DEBUG_REPORT_FLAG_BITS_MAX_ENUM_EXT |
 		0;
 	fvkCreateDebugReportCallbackEXT(_instance, &debug_callback_create_info, nullptr, &_debug_report);
